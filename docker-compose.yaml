@@ -1,8 +1,9 @@
-version: "2.1"
+version: "3"
 services:
   qbittorrent:
     image: ghcr.io/linuxserver/qbittorrent
     container_name: qbittorrent
+    network_mode: "service:gluetun"
     environment:
       - PUID=1000
       - PGID=1000
@@ -10,10 +11,49 @@ services:
       - WEBUI_PORT=8080
     volumes:
       - ~/qbittorrent:/config
-      - ~/Downloads:/downloads
-    ports:
-      - 6881:6881
-      - 6881:6881/udp
-      - 8080:8080
+      - "/media/${USER}/ssd1tb/downloads:/downloads"
+#    ports:
+#      - 6881:6881
+#      - 6881:6881/udp
+#      - 8080:8080
     restart: unless-stopped
+  samba:
+      image: vimagick/samba
+      volumes:
+        - ./data/smb.conf:/etc/samba/smb.conf
+        - "/media/${USER}/ssd1tb/downloads:/share"
+      network_mode: host
+      tty: yes
+      restart: always
+  gluetun:
+    image: qmcgaw/gluetun
+    container_name: gluetun
+    cap_add:
+      - NET_ADMIN
+    network_mode: bridge
+    ports:
+      #- 8888:8888/tcp # HTTP proxy
+      #- 8388:8388/tcp # Shadowsocks
+      #- 8388:8388/udp # Shadowsocks
+      #- 8000:8000/tcp # Built-in HTTP control server
+      - 6881:6881 #qbit
+      - 6881:6881/udp #qbit
+      - 8080:8080 #qbit
+    # command:
+    volumes:
+      - ~/yourpath:/gluetun
+    secrets:
+      - openvpn_user
+      - openvpn_password
+    environment:
+      # More variables are available, see the readme table
+      - VPNSP=private internet access
+    restart: always
+
+secrets:
+  openvpn_user:
+    file: ./openvpn_user
+  openvpn_password:
+    file: ./openvpn_password
+
 
