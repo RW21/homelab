@@ -11,17 +11,21 @@ services:
       - WEBUI_PORT=8080
     volumes:
       - ~/qbittorrent:/config
-      - "/media/${USER}/ssd1tb/downloads:/downloads"
-#    ports:
-#      - 6881:6881
-#      - 6881:6881/udp
-#      - 8080:8080
+      - "${MOUNT_LOCATION}/downloads:/downloads"
     restart: unless-stopped
+  jdownloader-2:
+    image: jlesage/jdownloader-2
+    network_mode: "service:gluetun"
+    volumes:
+      - "${MOUNT_LOCATION}/downloads:/output:rw"
+      - "/docker/appdata/jdownloader-2:/config:rw"
+    environment:
+      - TZ=Japan
   samba:
       image: vimagick/samba
       volumes:
         - ./data/smb.conf:/etc/samba/smb.conf
-        - "/media/${USER}/ssd1tb/downloads:/share"
+        - "${MOUNT_LOCATION}/downloads:/share"
       network_mode: host
       tty: yes
       restart: always
@@ -39,6 +43,7 @@ services:
       - 6881:6881 #qbit
       - 6881:6881/udp #qbit
       - 8080:8080 #qbit
+      - 5800:5800 #Jd2
     # command:
     volumes:
       - ~/yourpath:/gluetun
