@@ -1,0 +1,15 @@
+- name: 'Upgrade APT to the lastest packages'
+  action: apt upgrade=safe
+
+- name: 'Install basic tools'
+  apt:
+    pkg:
+      - fzf
+      - ripgrep
+      - neofetch
+      - htop
+      - neovim
+        # bat not available on debian
+      - bat
+  ignore_errors: yes
+

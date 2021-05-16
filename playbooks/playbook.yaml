@@ -1,0 +1,9 @@
+---
+- name: Ansible Playbook for configuring new general servers
+  hosts: webservers
+  roles:
+    - { role: general, tags: general }
+    - { role: zsh, tags: zsh }
+  remote_user: rw21-server
+  become: yes
+
