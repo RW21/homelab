@@ -4,6 +4,8 @@
   roles:
     - { role: general, tags: general }
     - { role: zsh, tags: zsh }
+    - { role: "nickjj.docker", tags: docker }
+    - { role: smb, tags: smb}
   remote_user: rw21-server
   become: yes
 

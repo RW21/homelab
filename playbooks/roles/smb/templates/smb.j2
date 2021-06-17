@@ -1,0 +1,22 @@
+[global]
+netbios name = HOMELAB
+workgroup = WORKGROUP
+server string = HOMELAB Samba Server
+server role = standalone
+map to guest = bad user
+usershare allow guests = yes
+
+[homes]
+comment = Home Directories
+browseable = no
+writable = yes
+
+[share]
+comment = Public File Sharing
+path = /mnt
+browseable = yes
+read only = no
+guest ok = yes
+admin users = root
+inherit permissions = yes
+

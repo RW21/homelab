@@ -1,0 +1,16 @@
+---
+- name: Install samba
+  apt:
+    pkg:
+      - samba
+
+- name: Set samba config
+  ansible.builtin.template:
+    src: smb.j2
+    dest: /etc/samba/smb.conf
+
+- name: Restart samba service
+  ansible.builtin.systemd:
+    name: smbd
+    state: reloaded
+
