@@ -1,0 +1,13 @@
+- name: Ensure NFS utilities are installed.
+  apt:
+    name:
+      - nfs-common
+      - nfs-kernel-server
+    state: present
+
+- name: Set nfs config
+  ansible.builtin.template:
+    src: nfs.j2
+    dest: /etc/exports
+  notify: reload nfs
+
