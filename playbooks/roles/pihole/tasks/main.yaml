@@ -1,0 +1,37 @@
+- name: Create pihole directory
+  file:
+    path: "/home/{{ ansible_user }}/pihole"
+    owner: "{{ ansible_user }}"
+    group: "{{ ansible_user }}"
+    state: directory
+    mode: 0755
+
+- name: Start/Update pihole container
+  docker_container:
+    name: pihole
+    image: pihole/pihole:2021.10
+    pull: yes
+    restart_policy: unless-stopped
+    ports:
+      - "53:53/tcp"
+      - "53:53/udp"
+      - "67:67/udp"
+      - "8100:80/tcp"
+    env:
+      TZ: "{{ timezone }}"
+      WEBPASSWORD: ryoshusho
+    dns_servers:
+      - 127.0.0.1
+    volumes:
+      - "/home/{{ ansible_user }}/pihole/pihole/:/etc/pihole/"
+      - "/home/{{ ansible_user }}/pihole/dnsmasq.d/:/etc/dnsmasq.d/"
+    log_driver: json-file
+    log_options:
+      max-size: "10m"
+      max-file: "5"
+
+- name: Remove old image versions
+  docker_prune:
+    images: yes
+    images_filters:
+      dangling: false
