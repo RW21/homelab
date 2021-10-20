@@ -11,3 +11,8 @@
     dest: /etc/exports
   notify: reload nfs
 
+- name: Start service nfs, if not started
+  ansible.builtin.service:
+    name: nfs-kernel-server
+    state: restarted
+
