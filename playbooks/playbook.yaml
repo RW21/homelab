@@ -4,8 +4,12 @@
   roles:
     - { role: general, tags: general }
     - { role: zsh, tags: zsh }
-    - { role: "nickjj.docker", tags: docker }
+    - { role: docker, tags: docker }
     - { role: smb, tags: smb}
+    - { role: compose, tags: compose}
+    - { role: nfs, tags: nfs}
+    - { role: pihole, tags: pihole }
+    - { role: reverse-proxy, tags: reverse-proxy}
   remote_user: rw21-server
   become: yes
 

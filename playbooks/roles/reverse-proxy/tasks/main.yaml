@@ -1,0 +1,24 @@
+- name: Create nginx conf directory
+  file:
+    path: "/home/{{ ansible_user }}/reverse-proxy"
+    owner: "{{ ansible_user }}"
+    group: "{{ ansible_user }}"
+    state: directory
+    mode: 0755
+
+- name: Move config
+  ansible.builtin.template:
+    src: nginx.conf
+    dest: "/home/{{ ansible_user }}/reverse-proxy/nginx.conf"
+  
+- name: Start/Update nginx container
+  docker_container:
+    name: nginx
+    image: nginx:latest
+    pull: yes
+    restart_policy: unless-stopped
+    ports:
+      - "80:80"
+    volumes: 
+      - "/home/{{ ansible_user }}/reverse-proxy/nginx.conf:/etc/nginx/nginx.conf"
+

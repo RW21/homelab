@@ -1,0 +1,36 @@
+---
+- name: Install aptitude using apt
+  apt: name=aptitude state=latest update_cache=yes force_apt_get=yes
+
+- name: Install required system packages
+  apt: name={{ item }} state=latest update_cache=yes
+  loop: [ 'apt-transport-https', 'ca-certificates', 'curl', 'software-properties-common', 'python3-pip', 'virtualenv', 'python3-setuptools']
+
+- name: Add Docker GPG apt Key
+  apt_key:
+    url: https://download.docker.com/linux/ubuntu/gpg
+    state: present
+
+- name: Add Docker Repository
+  apt_repository:
+    repo: deb https://download.docker.com/linux/ubuntu bionic stable
+    state: present
+
+- name: Update apt and install docker-ce
+  apt: update_cache=yes name=docker-ce state=latest
+
+- name: Add remote "ubuntu" user to "docker" group
+  remote_user: "{{ ansible_user_id }}"
+  user:
+    name: "{{ ansible_user_id }}"
+    group: "docker"
+    append: yes
+  tags:
+    - docker
+
+- name: Install docker-compose
+  remote_user: "{{ ansible_user_id }}"
+  get_url: 
+    url : https://github.com/docker/compose/releases/download/v2.0.1/docker-compose-linux-armv7
+    dest: /usr/local/bin/docker-compose
+    mode: 'u+x,g+x'
