@@ -1,7 +1,50 @@
-- name: Ensure a job that runs at 2 and 5 exists. Creates an entry like "0 5,2 * * ls -alh > /dev/null"
-  ansible.builtin.cron:
-    name: "check dirs"
-    minute: "0"
-    hour: "5,2"
-    job: "ls -alh > /dev/null"
+- name: Create influxdb directory
+  file:
+    path: "/home/{{ ansible_user }}/co2data"
+    owner: "{{ ansible_user }}"
+    group: "{{ ansible_user }}"
+    state: directory
+    mode: 0755
+
+- name: Run influx db
+  docker_container:
+    name: co2-database
+    image: influxdb:2.0.9
+    pull: yes
+    restart_policy: unless-stopped
+    ports:
+      - "2029:8086"
+    env:
+      INFLUX_TOKEN: !vault |
+                    $ANSIBLE_VAULT;1.1;AES256
+                    38383763663039646262626235653432303431343734373531643233316432346332613562356232
+                    3336633939373163386139323832363861303638383832380a326333643430656165663763663430
+                    63623333376439313234646563616263333836613939656230663734643633616537623762383165
+                    3334643430313735330a633239643335396466316665316162646432613364323261656338653933
+                    36333561346430376236656339373730313033316333343734376466316134663034306562333132
+                    31343939303564623561313031613764333430396338396530313534343030633038386537316263
+                    65396564613131353936616439353864323462613836623933616134353037393034356530343764
+                    34346332346366383366626339616633623964613363386262376263626236333266656131643539
+                    3235
+
+    volumes:
+      - "/home/{{ ansible_user }}/co2data/data:/var/lib/influxdb2"
+
+- name: Install jq
+  apt:
+    name: jq
+
+- name: Copy export script
+  copy:
+    src: ../templates/export-co2.sh
+    dest: "/home/{{ ansible_user }}/co2data/export-co2.sh"
+    owner: "{{ ansible_user }}"
+    mode: u=rwx
+
+- name: Run export script every minute
+  cron:
+    name: "export co2"
+    minute: "*"
+    user: "{{ ansible_user }}"
+    job: "/home/{{ ansible_user }}/co2data/export-co2.sh > /home/{{ansible_user }}/cronlogs 2>&1"
 
