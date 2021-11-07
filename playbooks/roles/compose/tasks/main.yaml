@@ -4,9 +4,3 @@
     src: ../../../../docker-compose.yaml
     dest: "/home/ubuntu/server/docker-compose.yaml"
 
-- name: Synchronization of src on the control machine to dest on the remote hosts
-  # remote_user: "{{ ansible_user_id }}"
-  ansible.posix.synchronize:
-    src: ../../../../data/nginx.conf
-    dest: "/home/ubuntu/server/nginx.conf"
-

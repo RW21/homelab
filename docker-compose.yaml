@@ -13,22 +13,22 @@ services:
       - ~/qbittorrent:/config
       - "${MOUNT_LOCATION}/downloads:/downloads"
     restart: unless-stopped
-  jdownloader-2:
-    image: jlesage/jdownloader-2
+  jdownloader:
+    image: jaymoulin/jdownloader
     network_mode: "service:gluetun"
+    container_name: jdownloader
+    restart: always
+    user: 1001:100
     volumes:
-      - "${MOUNT_LOCATION}/downloads:/output:rw"
-      - "/docker/appdata/jdownloader-2:/config:rw"
-    environment:
-      - TZ=Japan
-  samba:
-      image: vimagick/samba
-      volumes:
-        - ./data/smb.conf:/etc/samba/smb.conf
-        - "${MOUNT_LOCATION}/downloads:/share"
-      network_mode: host
-      tty: yes
-      restart: always
+        - /data/jdownloader:/opt/JDownloader/cfg
+        - "${MOUNT_LOCATION}/downloads:/opt/JDownloader/Downloads"
+    environment: 
+        # MYJD_USER: email@email.com #optional (see [Identify](https://github.com/jaymoulin/docker-jdownloader#identify))
+        # MYJD_PASSWORD: bar #optional (see [Identify](https://github.com/jaymoulin/docker-jdownloader#identify))
+        # MYJD_DEVICE_NAME: goofy #optional
+        XDG_DOWNLOAD_DIR: /opt/JDownloader/Downloads #optional
+    ports:
+        - 3129:5900
   gluetun:
     image: qmcgaw/gluetun
     container_name: gluetun
@@ -43,7 +43,7 @@ services:
       - 6881:6881 #qbit
       - 6881:6881/udp #qbit
       - 8080:8080 #qbit
-      - 5800:5800 #Jd2
+      - 3129:3129 #Jd2
     # command:
     volumes:
       - ~/yourpath:/gluetun
@@ -54,47 +54,10 @@ services:
       # More variables are available, see the readme table
       - VPNSP=private internet access
     restart: always
-  nginx:
-    image: nginx:latest
-    restart: always
-    extra_hosts:
-      - "host.docker.internal:host-gateway"
-    volumes: 
-      - ./data/nginx.conf:/etc/nginx/nginx.conf
-    ports:
-      - 80:80
-     # - 443:443
-    depends_on:
-      - gluetun
-#  mc:
-#    image: itzg/minecraft-server
-#    ports:
-#      - 25565:25565
-#    environment:
-#      EULA: "TRUE"
-#    volumes:
-#      # attach a directory relative to the directory containing this compose file
-#      - ./minecraft-data:/data
-  heimdall:
-    image: ghcr.io/linuxserver/heimdall
-    container_name: heimdall
-    environment:
-      - PUID=1000
-      - PGID=1000
-      - TZ=Japan/Tokyo
-    volumes:
-      - ./data/heimdall:/config
-    ports:
-      - 3333:80
-#      - 443:443
-    restart: unless-stopped
 
 secrets:
   openvpn_user:
     file: ./openvpn_user
   openvpn_password:
     file: ./openvpn_password
-  pihole_password:
-    file: ./pihole_password
-
 
