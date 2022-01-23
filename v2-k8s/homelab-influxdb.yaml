@@ -1,0 +1,56 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: influxdb
+  namespace: homelab
+spec:
+  # don't set >1 as it will lock the db files
+  replicas: 1
+  selector:
+    matchLabels:
+      app: influxdb
+  template:
+    metadata:
+      labels:
+        app: influxdb
+    spec:
+      volumes:
+        - name: influxdb-storage
+          persistentVolumeClaim:
+            claimName: measurements-pvc
+      containers:
+      - name: influxdb
+        image: influxdb:2.1.1
+        ports:
+        - containerPort: 8086
+        volumeMounts:
+          - mountPath: "/var/lib/influxdb2"
+            name: influxdb-storage
+            subPath: influxdb
+---
+
+apiVersion: v1
+kind: Service
+  creationTimestamp: "2022-01-01T09:46:41Z"
+  name: influxdb
+  namespace: homelab
+spec:
+  clusterIP: 10.43.195.248
+  clusterIPs:
+  - 10.43.195.248
+  externalTrafficPolicy: Cluster
+  ipFamilies:
+  - IPv4
+  ipFamilyPolicy: SingleStack
+  ports:
+  - nodePort: 32481
+    port: 8086
+    protocol: TCP
+    targetPort: 8086
+  selector:
+    app: influxdb
+  sessionAffinity: None
+  type: NodePort
+status:
+  loadBalancer: {}
+
