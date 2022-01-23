@@ -1,0 +1,22 @@
+- name: Copy export script
+  copy:
+    src: ../templates/bme280.py
+    dest: "/home/{{ ansible_user }}/ansible/bme280.py"
+    owner: "{{ ansible_user }}"
+    mode: u=rwx
+
+# - name: Basic usage
+#   debug:
+#     msg: "'{{ lookup('env', 'INFLUX_KEY') }}' is the HOME environment variable."
+
+# - name: Check if influxdb key is set in env variable
+#   ansible.builtin.assert:
+#     that: lookup('env', 'INFLUX_KEY')  != '' 
+#     fail_msg: "INFLUXDB_KEY is not set"
+
+- name: Run export script every minute
+  cron:
+    name: "export bme280"
+    minute: "*"
+    user: "{{ ansible_user }}"
+    job: "/home/{{ ansible_user }}/ansible/bme280.py > /home/{{ ansible_user }}/cronlogs 2>&1"

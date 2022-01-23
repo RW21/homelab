@@ -11,6 +11,6 @@
     - { role: pihole, tags: pihole }
     - { role: reverse-proxy, tags: reverse-proxy}
     - { role: co2, tags: co2}
+    - { role: bme280, tags: bme280}
   remote_user: rw21-server
   become: yes
-
