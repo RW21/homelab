@@ -7,8 +7,7 @@ ansible-playbook playbook.yaml -i hosts --become --ask-become-pass -e ansible_py
 ansible-playbook playbook.yaml  -i hosts --tags "general" --limit lark-server.local --become --ask-become-pass -e ansible_python_interpreter=/usr/bin/python3 -v
 ```
 
-## lark-server
+## Cluster monitoring
 
-Remember to restart `systemd-resolved` if network discovery fails!
-
+https://github.com/carlosedp/cluster-monitoring
 
