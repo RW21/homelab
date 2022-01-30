@@ -6,11 +6,8 @@
     - { role: zsh, tags: zsh }
     - { role: docker, tags: docker }
     - { role: smb, tags: smb}
-    - { role: compose, tags: compose}
     - { role: nfs, tags: nfs}
     - { role: pihole, tags: pihole }
-    - { role: reverse-proxy, tags: reverse-proxy}
-    - { role: co2, tags: co2}
     - { role: bme280, tags: bme280}
-  remote_user: rw21-server
+    - { role: container-registry, tags: container-registry}
   become: yes

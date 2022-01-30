@@ -1,0 +1,18 @@
+- fail: msg="Bailing out. this play requires 'dockerhub_username' and 'dockerhub_password'"
+  when: dockerhub_username is undefined or dockerhub_password is undefined
+
+- name: Template and copy configuration
+  template:
+    src: ../templates/config.j2
+    dest: /home/{{ ansible_user }}/docker-registry-config.yaml
+
+- name: Create and run registry container
+  docker_container:
+    name: Docker-registry
+    image: registry:2
+    state: started
+    restart_policy: always
+    ports:
+      - '5000:5000'
+    volumes:
+      - /home/{{ ansible_user }}/docker-registry-config.yaml:/etc/docker/registry/config.yml 
