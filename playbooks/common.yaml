@@ -1,5 +1,0 @@
----
-- hosts: lark-server
-  roles:
-    - server-common
-
