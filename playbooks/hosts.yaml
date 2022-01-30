@@ -1,18 +1,17 @@
-# [webservers]
-# lark-server.local  ansible_ssh_user=rw21-server
-# orangepi3.local    ansible_ssh_user=orangepi
-# ubuntu.local       ansible_ssh_user=ubuntu
+all:
+  children:
+    webservers:
+      hosts:
+        192.168.193.179:
+          ansible_user: ubuntu
+          ansible_host: 192.168.193.179
 
-# [webservers:vars]
-# ansible_ssh_private_key_file=/home/rw21/.ssh/id_rsa
-
-webservers:
-  hosts:
-    192.168.193.179:
-      ansible_ssh_user: ubuntu
-      ansible_python_interpreter: /usr/bin/python3
+    worker-nodes:
+      hosts:
+        192.168.193.38:
+          ansible_user: ubuntu
 
   vars:
     ansible_ssh_private_key_file: /home/rw21/.ssh/id_rsa
     timezone: JP
-
+    container_repository_endpoint: http://192.168.193.179:5000
