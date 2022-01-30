@@ -1,0 +1,6 @@
+---
+- name: Configuring new k3s agent nodes
+  hosts: worker-nodes
+  roles:
+    - { role: k3s-agent-setup ,tags: k3s-agent-setup }
+  become: yes

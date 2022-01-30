@@ -1,0 +1,22 @@
+---
+
+- name: Create container repository directory
+  file:
+    path: /var/rancher/k3s
+    state: directory
+    mode: 0755
+
+- name: Set repository endpoint variable
+  set_fact:
+    repository_endpoint: "{{ container_repository_endpoint }}"
+
+- name: Template container repository config
+  template:
+    src: ../templates/registries-config.j2
+    dest: /var/rancher/k3s/registries.yaml
+
+- name: Restart service k3s-agent
+  ansible.builtin.systemd:
+    state: restarted
+    daemon_reload: yes
+    name: k3s-agent
