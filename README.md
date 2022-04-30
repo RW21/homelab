@@ -1,5 +1,9 @@
 # homelab
 
+Please note that most of the stuff here is experimental and is a mess.
+
+It does not reflect what I would do in production environments.
+
 ## Playbooks
 
 ```
