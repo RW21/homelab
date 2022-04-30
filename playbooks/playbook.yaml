@@ -2,12 +2,15 @@
 - name: Ansible Playbook for configuring new general servers
   hosts: webservers
   roles:
-    - { role: general, tags: general }
-    - { role: zsh, tags: zsh }
-    - { role: docker, tags: docker }
-    - { role: smb, tags: smb}
-    - { role: nfs, tags: nfs}
+    # - { role: general, tags: general }
+    # - { role: zsh, tags: zsh }
+    # - { role: docker, tags: docker }
+    # - { role: smb, tags: smb}
+    # - { role: nfs, tags: nfs}
     - { role: pihole, tags: pihole }
-    - { role: bme280, tags: bme280}
+    # - { role: bme280, tags: bme280}
     - { role: container-registry, tags: container-registry}
+    - { role: raspi-backup, tags: raspi-backup }
   become: yes
+  vars_files:
+    - secrets.yaml

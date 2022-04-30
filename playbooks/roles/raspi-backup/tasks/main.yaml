@@ -1,0 +1,12 @@
+- name: Template and copy backup script
+  ansible.builtin.template:
+    src: templates/image-backup.sh
+    dest: /home/{{ ansible_user }}/ansible/image-backup.sh
+    mode: a+rx
+
+- name: Run backup every Sunday
+  cron:
+    name: "Disk image backup"
+    special_time: "weekly"
+    user: root
+    job: "/home/{{ ansible_user }}/ansible/image-backup.sh > /home/{{ ansible_user }}/cronlogs 2>&1"

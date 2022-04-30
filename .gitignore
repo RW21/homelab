@@ -2,3 +2,4 @@ openvpn*
 pihole_password
 .env
 /data/heimdall
+secrets.yaml
