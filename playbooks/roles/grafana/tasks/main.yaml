@@ -1,0 +1,11 @@
+- name: Run grafana
+  docker_container:
+    name: grafana
+    image: grafana/grafana-oss
+    pull: yes
+    restart_policy: unless-stopped
+    # ports:
+    #   - "3000:3000"
+    volumes: 
+      - "/home/{{ ansible_user }}/homelab-db/grafana:/var/lib/grafana"
+    network_mode: host

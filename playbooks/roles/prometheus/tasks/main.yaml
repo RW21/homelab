@@ -1,0 +1,19 @@
+- name: Copy over prometheus config
+  copy:
+    src: ../templates/prometheus.yml
+    dest: "/home/{{ ansible_user }}/ansible/prometheus.yml"
+    owner: "{{ ansible_user }}"
+  register: file_changed
+
+- name: Run prometheus
+  docker_container:
+    name: prometheus
+    image: prom/prometheus
+    pull: yes
+    restart_policy: unless-stopped
+    restart: yes
+    volumes: 
+      - "/home/{{ ansible_user }}/ansible/prometheus.yml:/etc/prometheus/prometheus.yml"
+      - "/home/{{ ansible_user }}/homelab-db/prometheus:/prometheus"
+    network_mode: host
+  when: file_changed.changed

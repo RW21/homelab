@@ -1,0 +1,11 @@
+global:
+  scrape_interval: 30s
+  scrape_timeout: 15s
+
+scrape_configs:
+- job_name: node
+  static_configs:
+  - targets: ['localhost:9100', '192.168.193.141:9182']
+- job_name: gpu
+  static_configs:
+  - targets: ['192.168.193.141:9835']

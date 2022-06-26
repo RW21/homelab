@@ -1,0 +1,12 @@
+- name: Run influx db
+  docker_container:
+    name: co2-database
+    image: influxdb:2.2.0
+    pull: yes
+    restart_policy: unless-stopped
+    ports:
+      - "2029:8086"
+    # env:
+    #   INFLUX_TOKEN: {{ INFLUX_TOKEN }} 
+    volumes: 
+      - "/home/{{ ansible_user }}/homelab-db/influxdb:/var/lib/influxdb2"
