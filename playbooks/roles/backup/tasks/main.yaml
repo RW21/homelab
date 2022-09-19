@@ -1,0 +1,16 @@
+- name: copy backup script 
+  template:
+    src: backup.sh
+    dest: /root/backup.sh
+    mode: 0755
+
+- name: add crontab
+  become: yes
+  cron:
+    name: backup
+    user: root
+    cron_file: backup
+    hour: 3
+    minute: 0
+    day: "fri"
+    job: "/root/backup.sh"
