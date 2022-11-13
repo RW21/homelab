@@ -1,0 +1,12 @@
+[Unit]
+Description=Prometheus exporter for smartctl
+
+[Service]
+Type=simple
+User=root
+ExecStart=/usr/local/bin/smartctl_exporter
+ExecReload=/bin/kill -HUP $MAINPID && /usr/local/bin/smartctl_exporter
+ExecStop=/bin/kill -TERM $MAINPID
+
+[Install]
+WantedBy=multi-user.target
