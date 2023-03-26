@@ -1,0 +1,45 @@
+- name: Download FRP binary
+  get_url:
+    url: https://github.com/fatedier/frp/releases/download/v0.48.0/frp_0.48.0_linux_amd64.tar.gz
+    dest: /tmp/frp.tar.gz
+    mode: '0755'
+
+- name: Extract FRP binary
+  unarchive:
+    src: /tmp/frp.tar.gz
+    dest: /tmp/
+    remote_src: yes
+
+- name: Copy FRP server binary to /usr/local/bin
+  copy:
+    src: /tmp/frp_0.48.0_linux_amd64/frps
+    dest: /usr/local/bin/frps
+    mode: '0755'
+    remote_src: yes
+
+- name: Create FRP server configuration directory
+  file:
+    path: /etc/frp
+    state: directory
+
+- name: Copy FRP server configuration file
+  template:
+    src: frps.ini.j2
+    dest: /etc/frp/frps.ini
+    mode: '0644'
+
+- name: Create FRP server systemd service
+  template:
+    src: frps.service.j2
+    dest: /etc/systemd/system/frps.service
+    mode: '0644'
+
+- name: Reload systemd daemon
+  systemd:
+    daemon_reload: yes
+
+- name: Enable and start FRP server service
+  systemd:
+    name: frps
+    enabled: yes
+    state: started
